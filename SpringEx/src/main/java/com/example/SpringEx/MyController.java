@@ -1,5 +1,7 @@
 package com.example.SpringEx;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+//@RestController
+@Controller //이걸로 해야 템플릿 적용이 됨
 public class MyController {
 	
 	@RequestMapping("/hello")
@@ -38,7 +41,12 @@ public class MyController {
 	public String word() {
 		return "word";
 	}
-
-
+	
+	@GetMapping("model")
+	public String model(Model m) {
+		m.addAttribute("title", "Hello World 1234");
+		m.addAttribute("content", "Content 1234");
+		return "with_model";
+	}
 }
 	
