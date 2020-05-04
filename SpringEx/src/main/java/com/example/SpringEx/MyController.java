@@ -1,8 +1,11 @@
 package com.example.SpringEx;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -72,6 +75,35 @@ public class MyController {
 	//return 할 때 템플릿이 아닌 그냥 값을 바로 찍고 싶어서 
 	public String requestParamTest(@RequestParam(value="name")String name) {
 		return name;
+	}
+	
+	@RequestMapping("/request_param3")
+	@ResponseBody 
+	// Map<String, String>
+	public String requestParamTest3(@RequestParam Map<String, String> params) {
+		String result = "";
+		for(String key : params.keySet()) {
+			result += (key + "/" + params.get(key) + " ");
+		}
+		return result;
+	}
+	
+	// @PathVariable을 이용하여 URL Path에 포함된 변수 가져오기 가능
+	@GetMapping("/path_variable/{abc}/{def}")
+	@ResponseBody 
+	// 조건 1. 변수 이름과 Mapping에 들어가는 이름이 같아야 함 (abc)
+	// 조건 2. @PathVariable 어노테이션에 전달된 값이 같아야 함 (def)
+	public String pathVariableTest(@PathVariable Integer abc, @PathVariable("def") String asdf) {
+		return abc + "," + asdf;
+	}
+	
+	@GetMapping("/{width}/{height}")
+	@ResponseBody
+	public String pathVariableTest(
+			@PathVariable("width") Integer width,
+			@PathVariable Integer height,
+			@RequestParam(value="blur", required=false, defaultValue = "0")Integer blur) {
+		return width + "," + height + "," + blur;
 	}
 }
 	
