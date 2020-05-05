@@ -1,6 +1,13 @@
 package com.example.SpringEx;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -104,6 +111,62 @@ public class MyController {
 			@PathVariable Integer height,
 			@RequestParam(value="blur", required=false, defaultValue = "0")Integer blur) {
 		return width + "," + height + "," + blur;
+	}
+	
+	@GetMapping("student2")
+	public ModelAndView student2(Student s) { // 파라미터의 Student 타입을 주목
+		ModelAndView m = new ModelAndView("student");
+		m.addObject("title", "Student page");
+		m.addObject("student", s);
+		return m;
+	}
+
+	// 리턴 타입이 void임을 주목
+	@RequestMapping("/servlet_object")
+	public void servletObjectTest(HttpServletRequest request, HttpServletResponse response)
+	throws IOException {
+	
+	// request 객체를 이용하여 요청에 대한 정보 확인 가능
+	// 파라미터 정보 접근
+	Enumeration<String> e = request.getParameterNames();
+	while(e.hasMoreElements()) {
+		String name = e.nextElement();
+		System.out.println("param : " + name + " : " + request.getParameter(name));
+	}
+	
+	// 헤더 정보 접근
+	e = request.getHeaderNames();
+	while(e.hasMoreElements()) {
+		String name = e.nextElement();
+		System.out.println("header : " + name + " : " + request.getHeader(name));
+	}
+	
+	// 바디 정보 접근
+	System.out.println("Body\n");
+	BufferedReader reader = request.getReader();
+	String s = null;
+	while((s = reader.readLine()) != null) {
+		System.out.println(s);
+	}
+	
+	// response 객체를 이용하여 응답에 대한 정보 추가/변경 가능
+	// 응답 코드와 응답 정보에 대한 형식을 헤더 정보에 추가
+	response.setStatus(200);
+	response.setContentType("application/json");
+	response.setCharacterEncoding("utf-8");
+	
+	// 넘어온 쿼리 스트링 정보를 json 형태로 출력하여 바디에 붙이기
+	PrintWriter writer = response.getWriter();
+	writer.append("{");
+	e = request.getParameterNames();
+	String sep = "";
+	while(e.hasMoreElements()) {
+		String name = e.nextElement();
+		writer.append(sep + "\"" + name + "\":");
+		writer.append("\"" + request.getParameter(name) + "\"");
+		sep = ",";
+	}
+	writer.append("}");
 	}
 }
 	
